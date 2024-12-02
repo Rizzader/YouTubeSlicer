@@ -3,91 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Video Slicer & Downloader</title>
+    <title>YouTube Video Editor</title>
+    <script src="https://www.youtube.com/iframe_api"></script>
     <style>
-        #video-preview, #time-slider {
+        /* Styling for the video preview */
+        #player {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Styling for the time slider */
+        .hidden {
             display: none;
         }
         #time-slider {
-            position: relative;
+            width: 100%;
+            margin-top: 10px;
             height: 20px;
-            background-color: #ddd;
-            margin-top: 20px;
+            background: #ccc;
+            position: relative;
         }
-        .handle {
+        #slider-track {
             position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: #00f;
+        }
+        #start-handle, #end-handle {
+            position: absolute;
+            top: 0;
             width: 10px;
             height: 20px;
-            background-color: #333;
+            background: #f00;
             cursor: pointer;
         }
-        .range {
+        #start-handle {
+            left: 0;
+        }
+        #end-handle {
+            right: 0;
+        }
+        #selected-range {
             position: absolute;
+            top: 0;
+            background: rgba(0, 255, 0, 0.5);
             height: 100%;
-            background-color: rgba(0, 0, 255, 0.3);
         }
         #time-tooltip {
             position: absolute;
-            top: -30px;
-            background-color: #333;
+            background: rgba(0, 0, 0, 0.7);
             color: #fff;
-            padding: 5px;
-            border-radius: 3px;
+            padding: 2px 5px;
             font-size: 12px;
             display: none;
         }
-        .dark-mode {
-            background-color: #121212;
-            color: #ffffff;
+
+        /* Wrap everything inside a flex container */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Ensure the video preview and sliders are centered and have space */
+        #player {
+            max-width: 80%;
+            margin-bottom: 20px;
+        }
+
+        #time-slider {
+            width: 80%;
+        }
+
+        .slider-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .input-wrapper {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <!-- YouTube Video Form -->
+        <input type="text" id="youtube-url" placeholder="Enter YouTube URL" />
+        <button id="load-video">Load Video</button>
 
-    <h1>YouTube Video Slicer & Downloader</h1>
+        <!-- Video Player -->
+        <div id="player" class="hidden"></div>
 
-    <form id="youtube-form">
-        <label for="youtube-url">Enter YouTube URL:</label>
-        <input type="text" id="youtube-url" required placeholder="https://www.youtube.com/watch?v=example">
-
-        <label for="start-time">Start Time (HH:MM:SS):</label>
-        <input type="text" id="start-time" value="00:00:00" required>
-
-        <label for="end-time">End Time (HH:MM:SS):</label>
-        <input type="text" id="end-time" required>
-
-        <label>
-            <input type="checkbox" id="audio-only"> Audio Only
-        </label>
-
-        <label for="format">Choose format:</label>
-        <select id="format">
-            <option value="mp4">MP4</option>
-            <option value="mp3">MP3</option>
-        </select>
-
-        <button type="submit">Download Clip</button>
-    </form>
-
-    <div id="video-preview">
-        <div id="player"></div>
-        <div id="time-slider">
-            <div id="slider-track" style="position: relative; height: 100%; width: 100%;">
-                <div id="selected-range" class="range"></div>
-                <div id="start-handle" class="handle"></div>
-                <div id="end-handle" class="handle"></div>
-                <div id="time-tooltip"></div>
-            </div>
+        <!-- Time Slider -->
+        <div id="time-slider" class="hidden">
+            <div id="slider-track"></div>
+            <div id="start-handle"></div>
+            <div id="end-handle"></div>
+            <div id="selected-range"></div>
+            <div id="time-tooltip"></div>
         </div>
 
-        <button type="button" id="play-button">Play</button>
-        <button type="button" id="pause-button">Pause</button>
+        <!-- Input Fields for Start and End Time -->
+        <div class="input-wrapper">
+            <input type="text" id="start-time" placeholder="Start Time" />
+            <input type="text" id="end-time" placeholder="End Time" />
+        </div>
+
+        <!-- Download Button -->
+        <button id="download-button">Download</button>
     </div>
 
-    <button id="theme-toggle">Toggle Theme</button>
-
-    <script src="https://www.youtube.com/iframe_api"></script>
     <script src="app.js"></script>
-
 </body>
 </html>
