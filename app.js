@@ -1,20 +1,18 @@
 let player;
 let videoLength = 0;
+let isDraggingStart = false;
+let isDraggingEnd = false;
 
 function onYouTubeIframeAPIReady() {
     console.log("YouTube API is ready!");
-    // YouTube API is ready for initialization, we will wait for the user to input a valid URL
 }
 
 function getYouTubeVideoId(url) {
-    console.log("Extracting video ID from URL:", url);
     const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
     const match = url.match(regExp);
     if (match && match[7].length === 11) {
-        console.log("Video ID found:", match[7]);
         return match[7];
     } else {
-        console.log("Invalid YouTube URL, no video ID found.");
         return false;
     }
 }
@@ -32,20 +30,15 @@ function timeToSeconds(timeStr) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM Loaded and Ready");
-
-    const form = document.getElementById('youtube-form');
     const urlInput = document.getElementById('youtube-url');
     const startTimeInput = document.getElementById('start-time');
     const endTimeInput = document.getElementById('end-time');
-    const videoPreview = document.getElementById('video-preview');
     const timeSlider = document.getElementById('time-slider');
+    const videoPreview = document.getElementById('video-preview');
 
-    // When the YouTube URL input changes
     urlInput.addEventListener('input', function() {
         const videoId = getYouTubeVideoId(this.value);
         if (videoId) {
-            console.log("Loading video:", videoId);
             if (player) {
                 player.loadVideoById(videoId);
             } else {
@@ -66,29 +59,37 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // When the player is ready (i.e., the video has loaded)
     function onPlayerReady(event) {
-        console.log("Player is ready");
         videoLength = player.getDuration();
-        console.log("Video length (seconds):", videoLength);
         startTimeInput.value = '00:00:00';
         endTimeInput.value = formatTime(videoLength);
     }
 
-    // Form submission event (to download)
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        console.log("Form submitted");
-
-        const startTime = timeToSeconds(startTimeInput.value);
-        const endTime = timeToSeconds(endTimeInput.value);
-
-        if (startTime >= endTime) {
-            alert('Start time must be before end time.');
-            return;
+    // Update start time slider
+    startTimeInput.addEventListener('input', function() {
+        if (!isDraggingStart) {
+            player.seekTo(timeToSeconds(startTimeInput.value));
         }
-
-        // Handle downloading the video clip (you can add this functionality later)
-        console.log(`Download from ${startTimeInput.value} to ${endTimeInput.value}`);
     });
-});
+
+    // Update end time slider
+    endTimeInput.addEventListener('input', function() {
+        if (!isDraggingEnd) {
+            player.seekTo(timeToSeconds(endTimeInput.value));
+        }
+    });
+
+    // Update sliders when player time changes
+    player.addEventListener('onStateChange', function() {
+        const currentTime = player.getCurrentTime();
+        startTimeInput.value = formatTime(currentTime);
+        endTimeInput.value = formatTime(videoLength);
+    });
+
+    // Slider change event (to drag the slider)
+    timeSlider.addEventListener('input', function() {
+        const startSeconds = timeToSeconds(startTimeInput.value);
+        const endSeconds = timeToSeconds(endTimeInput.value);
+
+        // Update the video player and sliders when dragging
+      
