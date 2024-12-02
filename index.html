@@ -1,125 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Video Editor</title>
-    <script src="https://www.youtube.com/iframe_api"></script>
-    <style>
-        /* Styling for the video preview */
-        #player {
-            max-width: 100%;
-            height: auto;
-        }
-
-        /* Styling for the time slider */
-        .hidden {
-            display: none;
-        }
-        #time-slider {
-            width: 100%;
-            margin-top: 10px;
-            height: 20px;
-            background: #ccc;
-            position: relative;
-        }
-        #slider-track {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 100%;
-            background: #00f;
-        }
-        #start-handle, #end-handle {
-            position: absolute;
-            top: 0;
-            width: 10px;
-            height: 20px;
-            background: #f00;
-            cursor: pointer;
-        }
-        #start-handle {
-            left: 0;
-        }
-        #end-handle {
-            right: 0;
-        }
-        #selected-range {
-            position: absolute;
-            top: 0;
-            background: rgba(0, 255, 0, 0.5);
-            height: 100%;
-        }
-        #time-tooltip {
-            position: absolute;
-            background: rgba(0, 0, 0, 0.7);
-            color: #fff;
-            padding: 2px 5px;
-            font-size: 12px;
-            display: none;
-        }
-
-        /* Wrap everything inside a flex container */
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
-
-        /* Ensure the video preview and sliders are centered and have space */
-        #player {
-            max-width: 80%;
-            margin-bottom: 20px;
-        }
-
-        #time-slider {
-            width: 80%;
-        }
-
-        .slider-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-        }
-
-        .input-wrapper {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-        }
-    </style>
+    <title>YouTube Slicer</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div class="container">
-        <!-- YouTube Video Form -->
-        <input type="text" id="youtube-url" placeholder="Enter YouTube URL" />
-        <button id="load-video">Load Video</button>
+        <h1>YouTube Video Slicer</h1>
+        <form id="youtube-form">
+            <label for="youtube-url">Enter YouTube URL:</label>
+            <input type="text" id="youtube-url" placeholder="Enter YouTube URL">
+            <label for="start-time">Start Time (HH:MM:SS):</label>
+            <input type="text" id="start-time" placeholder="Start Time (HH:MM:SS)">
+            <label for="end-time">End Time (HH:MM:SS):</label>
+            <input type="text" id="end-time" placeholder="End Time (HH:MM:SS)">
+            <button type="submit">Download</button>
+        </form>
 
-        <!-- Video Player -->
-        <div id="player" class="hidden"></div>
-
-        <!-- Time Slider -->
-        <div id="time-slider" class="hidden">
-            <div id="slider-track"></div>
-            <div id="start-handle"></div>
-            <div id="end-handle"></div>
-            <div id="selected-range"></div>
-            <div id="time-tooltip"></div>
+        <div id="video-preview" class="hidden">
+            <div id="player"></div>
+            <div id="time-slider" class="hidden">
+                <div id="slider-track">
+                    <div id="start-handle" class="handle"></div>
+                    <div id="end-handle" class="handle"></div>
+                    <div id="selected-range" class="selected-range"></div>
+                </div>
+                <div id="time-tooltip" class="tooltip hidden"></div>
+            </div>
         </div>
-
-        <!-- Input Fields for Start and End Time -->
-        <div class="input-wrapper">
-            <input type="text" id="start-time" placeholder="Start Time" />
-            <input type="text" id="end-time" placeholder="End Time" />
-        </div>
-
-        <!-- Download Button -->
-        <button id="download-button">Download</button>
     </div>
 
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script src="app.js"></script>
 </body>
+
 </html>
