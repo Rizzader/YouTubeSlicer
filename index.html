@@ -1,41 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Slicer</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>YouTube Video Slicer</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-    <div class="container">
-        <h1>YouTube Video Slicer</h1>
-        <form id="youtube-form">
-            <label for="youtube-url">Enter YouTube URL:</label>
-            <input type="text" id="youtube-url" placeholder="Enter YouTube URL">
-            <label for="start-time">Start Time (HH:MM:SS):</label>
-            <input type="text" id="start-time" placeholder="Start Time (HH:MM:SS)">
-            <label for="end-time">End Time (HH:MM:SS):</label>
-            <input type="text" id="end-time" placeholder="End Time (HH:MM:SS)">
-            <button type="submit">Download</button>
-        </form>
 
+    <div id="youtube-form">
+        <label for="youtube-url">YouTube URL:</label>
+        <input type="text" id="youtube-url" placeholder="Enter YouTube URL">
+        
         <div id="video-preview" class="hidden">
             <div id="player"></div>
-            <div id="time-slider" class="hidden">
-                <div id="slider-track">
-                    <div id="start-handle" class="handle"></div>
-                    <div id="end-handle" class="handle"></div>
-                    <div id="selected-range" class="selected-range"></div>
-                </div>
-                <div id="time-tooltip" class="tooltip hidden"></div>
-            </div>
         </div>
+        
+        <div id="time-slider-container" class="hidden">
+            <label for="start-time">Start Time:</label>
+            <input type="text" id="start-time" placeholder="00:00:00">
+            <input type="range" id="start-slider" min="0" max="100" step="1">
+            
+            <label for="end-time">End Time:</label>
+            <input type="text" id="end-time" placeholder="00:00:00">
+            <input type="range" id="end-slider" min="0" max="100" step="1">
+        </div>
+        
+        <button id="download-btn">Download</button>
     </div>
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="app.js"></script>
-</body>
 
+</body>
 </html>
