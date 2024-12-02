@@ -92,4 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const endSeconds = timeToSeconds(endTimeInput.value);
 
         // Update the video player and sliders when dragging
-      
+        player.seekTo(startSeconds);
+        player.seekTo(endSeconds);
+    });
+});
