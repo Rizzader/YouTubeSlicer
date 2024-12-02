@@ -1,17 +1,16 @@
 let player;
 let videoLength = 0;
 
-// Function to initialize YouTube player (triggered when API is ready)
-function onYouTubeIframeAPIReady() {}
+function onYouTubeIframeAPIReady() {
+    // Player will be initialized when a valid URL is entered
+}
 
-// Extract YouTube Video ID from URL
 function getYouTubeVideoId(url) {
     const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
     const match = url.match(regExp);
     return (match && match[7].length === 11) ? match[7] : false;
 }
 
-// Format seconds to HH:MM:SS
 function formatTime(seconds) {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -19,13 +18,11 @@ function formatTime(seconds) {
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 }
 
-// Convert HH:MM:SS to seconds
 function timeToSeconds(timeStr) {
     const [hours, minutes, seconds] = timeStr.split(':').map(Number);
     return hours * 3600 + minutes * 60 + seconds;
 }
 
-// Event listener for when the DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('youtube-form');
     const urlInput = document.getElementById('youtube-url');
@@ -38,6 +35,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const sliderTrack = document.getElementById('slider-track');
     const selectedRange = document.getElementById('selected-range');
     const timeTooltip = document.getElementById('time-tooltip');
+    const audioOnlyCheckbox = document.getElementById('audio-only');
+    const formatSelect = document.getElementById('format');
+    const themeToggle = document.getElementById('theme-toggle');
 
     let isDragging = false;
     let activeHandle = null;
@@ -96,7 +96,6 @@ document.addEventListener('DOMContentLoaded', function() {
         selectedRange.style.width = `${endPercent - startPercent}%`;
     }
 
-    // Drag functionality for time handles
     function handleDrag(e) {
         if (!isDragging || !activeHandle) return;
         
@@ -147,28 +146,57 @@ document.addEventListener('DOMContentLoaded', function() {
         timeTooltip.classList.add('hidden');
     });
 
-    // Form validation and download
+    function validateYouTubeUrl(url) {
+        return getYouTubeVideoId(url) !== false;
+    }
+
+    function validateTimeFormat(time) {
+        const pattern = /^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$/;
+        return pattern.test(time);
+    }
+
     form.addEventListener('submit', function(e) {
         e.preventDefault();
+        
+        // Reset previous error states
+        urlInput.classList.remove('border-red-500');
+        startTimeInput.classList.remove('border-red-500');
+        endTimeInput.classList.remove('border-red-500');
+        
+        let hasError = false;
 
-        // Validation
-        if (!getYouTubeVideoId(urlInput.value)) {
-            alert('Please enter a valid YouTube URL.');
-            return;
+        if (!validateYouTubeUrl(urlInput.value)) {
+            urlInput.classList.add('border-red-500');
+            alert('Please enter a valid YouTube URL');
+            hasError = true;
         }
 
-        const videoId = getYouTubeVideoId(urlInput.value);
+        if (!validateTimeFormat(startTimeInput.value)) {
+            startTimeInput.classList.add('border-red-500');
+            alert('Please enter a valid start time in HH:MM:SS format');
+            hasError = true;
+        }
 
-        // Fetch download link
-        fetch(`https://api.y2mate.com/youtube-api/video?id=${videoId}`)
-            .then(response => response.json())
-            .then(data => {
-                const downloadUrl = data.result.video[0].url;
-                window.location.href = downloadUrl;
-            })
-            .catch(error => {
-                alert('Error fetching download link.');
-                console.error(error);
-            });
+        if (!validateTimeFormat(endTimeInput.value)) {
+            endTimeInput.classList.add('border-red-500');
+            alert('Please enter a valid end time in HH:MM:SS format');
+            hasError = true;
+        }
+
+        if (!hasError) {
+            // Handle video download logic here
+            const videoId = getYouTubeVideoId(urlInput.value);
+            const startTime = timeToSeconds(startTimeInput.value);
+            const endTime = timeToSeconds(endTimeInput.value);
+            const format = formatSelect.value;
+            const isAudioOnly = audioOnlyCheckbox.checked;
+
+            console.log('Downloading video clip...');
+            console.log(`Video ID: ${videoId}, Start: ${startTime}, End: ${endTime}, Format: ${format}, Audio Only: ${isAudioOnly}`);
+        }
+    });
+
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
     });
 });
