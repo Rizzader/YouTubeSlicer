@@ -2,13 +2,21 @@ let player;
 let videoLength = 0;
 
 function onYouTubeIframeAPIReady() {
-    // Player will be initialized when a valid URL is entered
+    console.log("YouTube API is ready!");
+    // YouTube API is ready for initialization, we will wait for the user to input a valid URL
 }
 
 function getYouTubeVideoId(url) {
+    console.log("Extracting video ID from URL:", url);
     const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
     const match = url.match(regExp);
-    return (match && match[7].length === 11) ? match[7] : false;
+    if (match && match[7].length === 11) {
+        console.log("Video ID found:", match[7]);
+        return match[7];
+    } else {
+        console.log("Invalid YouTube URL, no video ID found.");
+        return false;
+    }
 }
 
 function formatTime(seconds) {
@@ -24,24 +32,20 @@ function timeToSeconds(timeStr) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM Loaded and Ready");
+
     const form = document.getElementById('youtube-form');
     const urlInput = document.getElementById('youtube-url');
     const startTimeInput = document.getElementById('start-time');
     const endTimeInput = document.getElementById('end-time');
     const videoPreview = document.getElementById('video-preview');
     const timeSlider = document.getElementById('time-slider');
-    const startHandle = document.getElementById('start-handle');
-    const endHandle = document.getElementById('end-handle');
-    const sliderTrack = document.getElementById('slider-track');
-    const selectedRange = document.getElementById('selected-range');
-    const timeTooltip = document.getElementById('time-tooltip');
 
-    let isDragging = false;
-    let activeHandle = null;
-
+    // When the YouTube URL input changes
     urlInput.addEventListener('input', function() {
         const videoId = getYouTubeVideoId(this.value);
         if (videoId) {
+            console.log("Loading video:", videoId);
             if (player) {
                 player.loadVideoById(videoId);
             } else {
@@ -50,7 +54,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     width: '640',
                     videoId: videoId,
                     events: {
-                        'onStateChange': onPlayerStateChange,
                         'onReady': onPlayerReady
                     }
                 });
@@ -63,126 +66,29 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // When the player is ready (i.e., the video has loaded)
     function onPlayerReady(event) {
+        console.log("Player is ready");
         videoLength = player.getDuration();
+        console.log("Video length (seconds):", videoLength);
         startTimeInput.value = '00:00:00';
         endTimeInput.value = formatTime(videoLength);
-        updateSliderPositions();
     }
 
-    function onPlayerStateChange(event) {
-        if (event.data === YT.PlayerState.PAUSED) {
-            const currentTime = player.getCurrentTime();
-            const activeInput = document.activeElement;
-            if (activeInput === startTimeInput || activeInput === endTimeInput) {
-                activeInput.value = formatTime(currentTime);
-                updateSliderPositions();
-            }
-        }
-    }
-
-    function updateSliderPositions() {
-        const startTime = timeToSeconds(startTimeInput.value);
-        const endTime = timeToSeconds(endTimeInput.value);
-        const startPercent = (startTime / videoLength) * 100;
-        const endPercent = (endTime / videoLength) * 100;
-        
-        startHandle.style.left = `${startPercent}%`;
-        endHandle.style.left = `${endPercent}%`;
-        selectedRange.style.left = `${startPercent}%`;
-        selectedRange.style.width = `${endPercent - startPercent}%`;
-    }
-
-    function handleDrag(e) {
-        if (!isDragging || !activeHandle) return;
-        
-        const rect = sliderTrack.getBoundingClientRect();
-        let position = (e.clientX - rect.left) / rect.width;
-        position = Math.max(0, Math.min(1, position));
-        
-        const currentTime = position * videoLength;
-        const formattedTime = formatTime(currentTime);
-        
-        if (activeHandle === startHandle) {
-            const endTime = timeToSeconds(endTimeInput.value);
-            if (currentTime < endTime) {
-                startTimeInput.value = formattedTime;
-                player.seekTo(currentTime);
-            }
-        } else {
-            const startTime = timeToSeconds(startTimeInput.value);
-            if (currentTime > startTime) {
-                endTimeInput.value = formattedTime;
-                player.seekTo(currentTime);
-            }
-        }
-        
-        updateSliderPositions();
-        
-        // Update tooltip
-        timeTooltip.textContent = formattedTime;
-        timeTooltip.style.left = `${position * 100}%`;
-    }
-
-    startHandle.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        activeHandle = startHandle;
-        timeTooltip.classList.remove('hidden');
-    });
-
-    endHandle.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        activeHandle = endHandle;
-        timeTooltip.classList.remove('hidden');
-    });
-
-    document.addEventListener('mousemove', handleDrag);
-    document.addEventListener('mouseup', () => {
-        isDragging = false;
-        activeHandle = null;
-        timeTooltip.classList.add('hidden');
-    });
-
-    function validateYouTubeUrl(url) {
-        return getYouTubeVideoId(url) !== false;
-    }
-
-    function validateTimeFormat(time) {
-        const pattern = /^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$/;
-        return pattern.test(time);
-    }
-
+    // Form submission event (to download)
     form.addEventListener('submit', function(e) {
         e.preventDefault();
-        
-        // Reset previous error states
-        urlInput.classList.remove('border-red-500');
-        startTimeInput.classList.remove('border-red-500');
-        endTimeInput.classList.remove('border-red-500');
-        
-        let hasError = false;
+        console.log("Form submitted");
 
-        if (!validateYouTubeUrl(urlInput.value)) {
-            urlInput.classList.add('border-red-500');
-            alert('Please enter a valid YouTube URL');
-            hasError = true;
+        const startTime = timeToSeconds(startTimeInput.value);
+        const endTime = timeToSeconds(endTimeInput.value);
+
+        if (startTime >= endTime) {
+            alert('Start time must be before end time.');
+            return;
         }
 
-        if (!validateTimeFormat(startTimeInput.value)) {
-            startTimeInput.classList.add('border-red-500');
-            alert('Please enter a valid start time in HH:MM:SS format');
-            hasError = true;
-        }
-
-        if (!validateTimeFormat(endTimeInput.value)) {
-            endTimeInput.classList.add('border-red-500');
-            alert('Please enter a valid end time in HH:MM:SS format');
-            hasError = true;
-        }
-
-        if (!hasError) {
-            // TODO: Implement the download functionality
-            console.log('Form submitted successfully');
-        }
+        // Handle downloading the video clip (you can add this functionality later)
+        console.log(`Download from ${startTimeInput.value} to ${endTimeInput.value}`);
     });
 });
