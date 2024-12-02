@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Video Slicer</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    input, button { margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <h1>YouTube Video Slicer & Downloader</h1>
+  <input type="text" id="videoURL" placeholder="Enter YouTube URL" size="50"><br>
+  <label>Start Time: <input type="text" id="startTime" placeholder="HH:MM:SS"></label><br>
+  <label>End Time: <input type="text" id="endTime" placeholder="HH:MM:SS"></label><br>
+  <button id="downloadVideo">Download Video Clip</button>
+  <button id="downloadAudio">Download Audio Only</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/ffmpeg.js/ffmpeg.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
