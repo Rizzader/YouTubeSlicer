@@ -36,6 +36,10 @@
             font-size: 12px;
             display: none;
         }
+        .dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
     </style>
 </head>
 <body>
@@ -52,6 +56,16 @@
         <label for="end-time">End Time (HH:MM:SS):</label>
         <input type="text" id="end-time" required>
 
+        <label>
+            <input type="checkbox" id="audio-only"> Audio Only
+        </label>
+
+        <label for="format">Choose format:</label>
+        <select id="format">
+            <option value="mp4">MP4</option>
+            <option value="mp3">MP3</option>
+        </select>
+
         <button type="submit">Download Clip</button>
     </form>
 
@@ -65,7 +79,12 @@
                 <div id="time-tooltip"></div>
             </div>
         </div>
+
+        <button type="button" id="play-button">Play</button>
+        <button type="button" id="pause-button">Pause</button>
     </div>
+
+    <button id="theme-toggle">Toggle Theme</button>
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="app.js"></script>
