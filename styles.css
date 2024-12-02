@@ -13,8 +13,9 @@ body {
 
 #player {
     margin-bottom: 20px;
-    max-width: 100%;
-    height: auto;
+    width: 80%;
+    height: 450px; /* Set a height for the video */
+    max-width: 800px;
 }
 
 .hidden {
