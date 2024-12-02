@@ -1,63 +1,99 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f7f7f7;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
+    min-height: 100vh;
+    flex-direction: column;
 }
 
-.container {
-    text-align: center;
-}
-
-input, button {
-    margin: 10px;
-    padding: 10px;
-    font-size: 16px;
+#player {
+    margin-bottom: 20px;
 }
 
 .hidden {
     display: none;
 }
 
-#player {
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-top: 20px;
-    width: 640px;
-    height: 360px;
 }
 
-#time-slider {
-    margin-top: 20px;
-    width: 640px;
-    height: 20px;
-    background-color: #ccc;
-    position: relative;
+input {
+    margin: 10px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 300px;
 }
 
-#start-handle, #end-handle {
-    position: absolute;
-    top: 0;
-    width: 10px;
-    height: 20px;
-    background-color: #00f;
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
 }
 
-.selected-range {
-    position: absolute;
-    top: 0;
-    height: 100%;
-    background-color: rgba(0, 0, 255, 0.3);
+button:hover {
+    background-color: #45a049;
 }
 
-.tooltip {
-    position: absolute;
-    top: -25px;
-    font-size: 12px;
-    background-color: #333;
-    color: white;
-    padding: 5px;
-    border-radius: 3px;
+#video-preview {
+    margin-top: 20px;
+}
+
+#time-slider {
+    width: 100%;
+    margin-top: 20px;
+}
+
+input[type="range"] {
+    width: 100%;
+    margin: 10px 0;
+}
+
+#youtube-form {
+    width: 80%;
+    max-width: 600px;
+}
+
+#time-slider-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 10px;
+    background: #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #4CAF50;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #4CAF50;
+    border-radius: 50%;
+    cursor: pointer;
 }
