@@ -43,8 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 player.loadVideoById(videoId);
             } else {
                 player = new YT.Player('player', {
-                    height: '360',
-                    width: '640',
+                    height: '450',
+                    width: '100%',
                     videoId: videoId,
                     events: {
                         'onReady': onPlayerReady
@@ -93,7 +93,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Ensure video scales correctly on resize
     window.addEventListener('resize', function() {
         const playerElement = document.getElementById('player');
-        const containerWidth = window.innerWidth * 0.8;
-        playerElement.style.width = `${containerWidth}px`;
+        playerElement.style.width = '100%'; // Make sure it takes the full width
+        const containerWidth = playerElement.offsetWidth;
+        playerElement.style.height = `${containerWidth * (9/16)}px`; // Adjust the height based on width (16:9 ratio)
     });
 });
