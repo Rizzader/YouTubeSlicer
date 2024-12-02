@@ -1,23 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouTube Video Slicer</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    input, button { margin: 10px 0; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Video Slicer & Downloader</title>
+    <style>
+        #video-preview, #time-slider {
+            display: none;
+        }
+        #time-slider {
+            position: relative;
+            height: 20px;
+            background-color: #ddd;
+            margin-top: 20px;
+        }
+        .handle {
+            position: absolute;
+            width: 10px;
+            height: 20px;
+            background-color: #333;
+            cursor: pointer;
+        }
+        .range {
+            position: absolute;
+            height: 100%;
+            background-color: rgba(0, 0, 255, 0.3);
+        }
+        #time-tooltip {
+            position: absolute;
+            top: -30px;
+            background-color: #333;
+            color: #fff;
+            padding: 5px;
+            border-radius: 3px;
+            font-size: 12px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-  <h1>YouTube Video Slicer & Downloader</h1>
-  <input type="text" id="videoURL" placeholder="Enter YouTube URL" size="50"><br>
-  <label>Start Time: <input type="text" id="startTime" placeholder="HH:MM:SS"></label><br>
-  <label>End Time: <input type="text" id="endTime" placeholder="HH:MM:SS"></label><br>
-  <button id="downloadVideo">Download Video Clip</button>
-  <button id="downloadAudio">Download Audio Only</button>
 
-  <script src="https://cdn.jsdelivr.net/npm/ffmpeg.js/ffmpeg.min.js"></script>
-  <script src="app.js"></script>
+    <h1>YouTube Video Slicer & Downloader</h1>
+
+    <form id="youtube-form">
+        <label for="youtube-url">Enter YouTube URL:</label>
+        <input type="text" id="youtube-url" required placeholder="https://www.youtube.com/watch?v=example">
+
+        <label for="start-time">Start Time (HH:MM:SS):</label>
+        <input type="text" id="start-time" value="00:00:00" required>
+
+        <label for="end-time">End Time (HH:MM:SS):</label>
+        <input type="text" id="end-time" required>
+
+        <button type="submit">Download Clip</button>
+    </form>
+
+    <div id="video-preview">
+        <div id="player"></div>
+        <div id="time-slider">
+            <div id="slider-track" style="position: relative; height: 100%; width: 100%;">
+                <div id="selected-range" class="range"></div>
+                <div id="start-handle" class="handle"></div>
+                <div id="end-handle" class="handle"></div>
+                <div id="time-tooltip"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="app.js"></script>
+
 </body>
 </html>
