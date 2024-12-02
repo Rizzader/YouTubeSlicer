@@ -1,7 +1,5 @@
 let player;
 let videoLength = 0;
-let isDraggingStart = false;
-let isDraggingEnd = false;
 
 function onYouTubeIframeAPIReady() {
     console.log("YouTube API is ready!");
@@ -33,7 +31,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const urlInput = document.getElementById('youtube-url');
     const startTimeInput = document.getElementById('start-time');
     const endTimeInput = document.getElementById('end-time');
-    const timeSlider = document.getElementById('time-slider');
+    const startSlider = document.getElementById('start-slider');
+    const endSlider = document.getElementById('end-slider');
+    const timeSliderContainer = document.getElementById('time-slider-container');
     const videoPreview = document.getElementById('video-preview');
 
     urlInput.addEventListener('input', function() {
@@ -52,10 +52,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
             videoPreview.classList.remove('hidden');
-            timeSlider.classList.remove('hidden');
+            timeSliderContainer.classList.remove('hidden');
         } else {
             videoPreview.classList.add('hidden');
-            timeSlider.classList.add('hidden');
+            timeSliderContainer.classList.add('hidden');
         }
     });
 
@@ -63,36 +63,37 @@ document.addEventListener('DOMContentLoaded', function() {
         videoLength = player.getDuration();
         startTimeInput.value = '00:00:00';
         endTimeInput.value = formatTime(videoLength);
+        startSlider.max = videoLength;
+        endSlider.max = videoLength;
     }
 
     // Update start time slider
-    startTimeInput.addEventListener('input', function() {
-        if (!isDraggingStart) {
-            player.seekTo(timeToSeconds(startTimeInput.value));
-        }
+    startSlider.addEventListener('input', function() {
+        player.seekTo(startSlider.value);
+        startTimeInput.value = formatTime(player.getCurrentTime());
     });
 
     // Update end time slider
+    endSlider.addEventListener('input', function() {
+        player.seekTo(endSlider.value);
+        endTimeInput.value = formatTime(player.getCurrentTime());
+    });
+
+    // Update text inputs based on slider values
+    startTimeInput.addEventListener('input', function() {
+        startSlider.value = timeToSeconds(startTimeInput.value);
+        player.seekTo(startSlider.value);
+    });
+
     endTimeInput.addEventListener('input', function() {
-        if (!isDraggingEnd) {
-            player.seekTo(timeToSeconds(endTimeInput.value));
-        }
+        endSlider.value = timeToSeconds(endTimeInput.value);
+        player.seekTo(endSlider.value);
     });
 
-    // Update sliders when player time changes
-    player.addEventListener('onStateChange', function() {
-        const currentTime = player.getCurrentTime();
-        startTimeInput.value = formatTime(currentTime);
-        endTimeInput.value = formatTime(videoLength);
-    });
-
-    // Slider change event (to drag the slider)
-    timeSlider.addEventListener('input', function() {
-        const startSeconds = timeToSeconds(startTimeInput.value);
-        const endSeconds = timeToSeconds(endTimeInput.value);
-
-        // Update the video player and sliders when dragging
-        player.seekTo(startSeconds);
-        player.seekTo(endSeconds);
+    // Ensure video scales correctly on resize
+    window.addEventListener('resize', function() {
+        const playerElement = document.getElementById('player');
+        const containerWidth = window.innerWidth * 0.8;
+        playerElement.style.width = `${containerWidth}px`;
     });
 });
